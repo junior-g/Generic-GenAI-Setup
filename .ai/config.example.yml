@@ -1,0 +1,138 @@
+# .ai/config.yml — per-project configuration
+#
+# Written once at activation step S4 and read at the start of every session. This is the ONLY file that
+# knows anything language-, tool- or path-specific. Every rule in .ai/rules/ refers to gates and paths
+# through this file, which is what makes the rule set portable.
+#
+# Copy this file to .ai/config.yml and replace every value. Do not leave a `null` where a real value
+# belongs — an unresolved key is an open question, and it goes in the `unresolved` block at the bottom
+# so it is visible instead of silently defaulted.
+#
+# YAML is used because it needs no toolchain to read or write, and both humans and agents parse it
+# reliably. Nothing in the framework executes this file.
+
+framework:
+  version: "1.0.0"           # the Generic-GenAI-Setup version this project was installed from
+  installed: "YYYY-MM-DD"
+  installed_by: "<assistant name and version>"
+  home: "~/Documents/Generic-GenAI-Setup"   # where to re-sync the payload from
+
+project:
+  name: "<project name>"
+  # One sentence. What it does, for whom. Longer form lives in rules/project/product.md.
+  summary: "<one sentence>"
+  repo_root: "."
+  # Primary language first. Used to select the stack profile and the gate commands.
+  languages: ["<primary>", "<secondary>"]
+  stack_profile: "<id from setup/stack-profiles.md, e.g. javascript-typescript>"
+  package_manager: "<npm | pnpm | yarn | pip | poetry | uv | maven | gradle | go | cargo | dotnet | composer | bundler | mix>"
+  runtime_versions:
+    # Whatever pins matter. Read these from the real version files, do not guess.
+    "<runtime>": "<version>"
+
+# ---------------------------------------------------------------------------
+# The four gates. These are ROLES, not commands. Every rule file refers to the
+# role; only this block knows the command. All four must pass before anything
+# is reported complete — see rules/60-workflow-and-verification.md.
+# ---------------------------------------------------------------------------
+gates:
+  lint:
+    command: "<e.g. npm run lint | ruff check . | ./gradlew ktlintCheck | golangci-lint run>"
+    zero_warnings: true      # warnings count as failures unless the project genuinely cannot
+    notes: ""
+  static:
+    # Type check, or the closest static analysis the language offers. If the language has no type
+    # checker, say what stands in for it here rather than deleting the gate.
+    command: "<e.g. npm run typecheck | mypy . | ./gradlew compileKotlin | go vet ./...>"
+    substituted: false       # true if this is a stand-in rather than a real type check
+    notes: ""
+  build:
+    command: "<e.g. npm run build | python -m build | ./gradlew build | go build ./... | cargo build --release>"
+    notes: ""
+  test:
+    command: "<e.g. npm test | pytest -q | ./gradlew test | go test ./... | cargo test>"
+    # Never a watch mode. A gate must terminate on its own.
+    single_run_flag: "<e.g. --run, --watchAll=false, or empty if already single-run>"
+    coverage_command: "<optional>"
+    notes: ""
+  extra:
+    # Project-specific gates that must also pass. One entry per gate. Empty list is fine.
+    - name: "<e.g. schema-validate | index-selftest | a11y-audit>"
+      command: "<command>"
+      when: "<the condition that makes this gate required, e.g. 'after touching db/migrations/**'>"
+
+# ---------------------------------------------------------------------------
+# Where things live. Rules refer to these keys, never to literal paths.
+# ---------------------------------------------------------------------------
+paths:
+  # Feature and enhancement artefacts: <artefact_root>/<slug>/**
+  # Bug fixes:                          <artefact_root>/hotfixes/<slug>/**
+  artefact_root: ".ai/work"
+  # Where the generated project rule layer lives.
+  rules_root: ".ai/rules/project"
+  # The project's own long-form documentation, if it has any.
+  docs_root: "<e.g. docs | doc | wiki | null>"
+  source_roots: ["<e.g. src>"]
+  test_roots: ["<e.g. tests>"]
+  # Roots that drive FILE-MATCH rule loading. Empty a glob out if the project has no such layer.
+  file_match:
+    ui: ["<glob, e.g. src/ui/**, src/components/**>"]
+    api: ["<glob, e.g. src/api/**, src/routes/**>"]
+    data: ["<glob, e.g. src/models/**, migrations/**, schema/**>"]
+  # Never read by feature code directly — see non-negotiable 10.
+  constants_module: "<path to the single source of constants>"
+  env_module: "<path to the validated-env accessor>"
+  secrets_example: "<e.g. .env.example>"
+
+# ---------------------------------------------------------------------------
+# Retrieval. Tier chosen at S7 — see retrieval/index-spec.md.
+# ---------------------------------------------------------------------------
+retrieval:
+  tier: "<0 | 1 | 2>"
+  # 0 = INDEX.md + exact search. 1 = IDE/editor semantic search. 2 = local retrieval index.
+  rationale: "<why this tier, given corpus size and query pattern>"
+  index_build_command: "<command, or null at tiers 0 and 1>"
+  index_query_command: "<command, or null at tiers 0 and 1>"
+  index_stats_command: "<command, or null at tiers 0 and 1>"
+  index_artefact_path: "<generated index location, gitignored, or null>"
+  rebuild_trigger: "after each completed section, and on a fresh clone"
+
+# ---------------------------------------------------------------------------
+# IDE integration. Written at S6, logged in adapters/adapters-log.md.
+# ---------------------------------------------------------------------------
+ide:
+  name: "<e.g. Cursor | VS Code + Copilot | Kiro | Claude Code | IntelliJ | Vim + Aider>"
+  mechanism: "<the file or directory this IDE reads, e.g. AGENTS.md>"
+  how_confirmed: "<read own docs | found existing file in repo | fell back to open standard>"
+  adapter_files: ["<e.g. AGENTS.md>"]
+  load_modes:
+    always: "supported | fallback: <what you did instead>"
+    auto: "supported | fallback: <what you did instead>"
+    on_demand: "supported | fallback: <what you did instead>"
+    file_match: "supported | fallback: <what you did instead>"
+  content_inlined: false     # true only if the mechanism cannot follow a pointer
+  inlined_hashes: {}         # file -> hash at generation time, if content_inlined
+
+# ---------------------------------------------------------------------------
+# Process settings. Defaults match the track files; change only with a reason.
+# ---------------------------------------------------------------------------
+process:
+  caps:
+    track_a: { gap: 3, design: 3, tasks: 2 }
+    track_b: { gap: 2, design: 2, tasks: 1 }
+    track_b_lite: { gap: 1, design_and_tasks_combined: 1 }
+  # Declared per session in the raw requirement; this is the default ceiling.
+  default_session_budget: "<e.g. 'one stage' | 'one section' | 'two hours'>"
+  # Languages that must stay in parity on user-facing strings. Empty list if monolingual.
+  locales: []
+  # Roles or actors the system knows about. Drives the authorisation checks in reviews.
+  actors: ["<e.g. anonymous, user, admin>"]
+
+# ---------------------------------------------------------------------------
+# Anything that could not be established from evidence during activation.
+# This block existing and being non-empty is normal and honest. Guessing is not.
+# ---------------------------------------------------------------------------
+unresolved:
+  - question: "<what could not be determined>"
+    why: "<what was checked and why it was inconclusive>"
+    default_applied: "<the reversible default in use meanwhile, or none>"
