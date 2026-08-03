@@ -22,9 +22,9 @@ overwrites `rules/project/**`, `config.yml`, `INDEX.md` Zone 2, or `work/**`. Pr
 Initial release. A generalisation of a working setup from a production codebase — language-agnostic,
 IDE-agnostic, no dependencies.
 
-**Activation.** `super_saiyan_bann_jo` triggers a nine-step protocol (`S0`–`S8`) that discovers the project by
+**Activation.** `super_saiyan_bann_jo` triggers a nine-step protocol (`S0`–`S9`) that discovers the project by
 evidence, discovers the assistant's own instruction mechanism by evidence, installs the payload, generates the
-project rule layer, writes an IDE adapter, chooses a retrieval tier, and **proves twelve behaviour checks**
+project rule layer, writes an IDE adapter, chooses a retrieval tier, and **proves fourteen behaviour checks**
 before reporting success.
 
 **Contract.** Four load modes — ALWAYS, AUTO, ON-DEMAND, FILE-MATCH — each with a defined fallback, so the rule
@@ -116,3 +116,62 @@ Full list with mitigations: [`rationale.md`](rationale.md) §5.
 
 Removing a rule needs the same care as removing code: say what replaced it, and whether an installation that
 still follows the old rule is now wrong or merely out of date.
+
+---
+
+## 1.1.0
+
+**Adds the enforcement layer.** v1.0.0 described the process completely and never checked it. Two installs
+completed with no index built and no track followed; both would have scored 14/14 on behaviour, because nothing
+asked about either. This release closes that.
+
+The gap was structural, not a wording problem: every rule was an obligation, and no moment in a session or an
+install ever required one to be produced.
+
+### Added
+
+| File | Purpose |
+|------|---------|
+| `.ai/rules/01-session-preflight.md` | **ALWAYS.** The framework's one enforcement moment. A five-line preflight block — track, stage and resume read, gates, retrieval tier, pins — before the first file edit of any session. Three of those lines can halt the work |
+| `.ai/setup/install-audit.md` | **Activation step `S9`.** The artefact counterpart to the behaviour probes: 69 rows across 7 blocks, each verified by opening a file. Four rows are blocking |
+| `.ai/retrieval/build-index.md` | **The missing indexing procedure.** Six passes that populate `INDEX.md` Zone 2, a deliverable defined per tier, and the requirement to report the tier's limitation to the user |
+
+### Changed
+
+| File | Change | Re-sync required |
+|------|--------|------------------|
+| `.ai/setup/activation-protocol.md` | `S7` rewritten: every tier now has a named deliverable, and choosing tier 0 no longer looks like a decision to build nothing. New `S9` install-audit step. Protocol is now `S0`–`S9` | yes |
+| `.ai/manifest.md` | ALWAYS set is nine universal files, not eight. Behaviour checks 12 → **14**: #13 indexing exists and is used, #14 preflight before the first edit | yes |
+| `.ai/adapters/README.md` | Adapter content contract gains item **11** — the preflight must be named, or the enforcement moment never loads | yes |
+| `.ai/adapters/adapters-log.md` | Entries now record two scores: behaviour /14 and the install-audit blocks | yes |
+| `.ai/rules/95-retrieval.md` | An empty `INDEX.md` is now named as an incomplete install, not a reason to read directories wide | no |
+| `.ai/rules/05-failure-detection.md` | Two signal rows: editing without a preflight, and reaching for a directory read with no known index | no |
+| `.ai/rules/00-agent-contract.md` · `80-work-intake.md` | Point at the preflight as where the track becomes visible | no |
+| `.ai/knowledge/ai_troubleshooting.md` | New §9 "Installed but not followed" — the three-layer diagnostic: loaded, reachable, required | no |
+| `MAIN.md` · `README.md` · `.ai/INDEX.md` | Reflect `S0`–`S9`, 14 checks, the nine-file ALWAYS set, and the three new files | yes |
+
+### Migration notes for existing installations
+
+An installation on 1.0.0 is missing the enforcement layer and will exhibit the reported symptoms. To upgrade:
+
+1. Re-sync the universal payload: `rules/00`–`95`, `templates/`, `manifest.md`, `retrieval/`, `setup/`.
+   `rules/project/**`, `config.yml`, `INDEX.md` Zone 2 and `work/**` are **never** overwritten.
+2. **Add `01-session-preflight.md` to the adapter's ALWAYS list.** Without this the upgrade changes nothing —
+   the rule will be present and never loaded.
+3. Confirm the adapter names `80-work-intake.md`. On most tools AUTO is unsupported, so an unnamed work-intake
+   silently never loads and work is never classified.
+4. Run `.ai/setup/install-audit.md` in full. Expect A5.2 (`INDEX.md` Zone 2 populated) to fail on installs that
+   chose tier 0 under 1.0.0 — that is the indexing gap. Fix it with `retrieval/build-index.md` §2. **Do not
+   change tier**; the tier was probably right and the deliverable was skipped.
+5. Re-run `S8` with the two new probes, then `S9`. Log both scores as a new `adapters-log.md` entry referencing
+   the old one.
+
+### Design decisions worth recording
+
+| Decision | Reasoning |
+|----------|-----------|
+| The preflight is a *stop*, not a formality | three of its five lines can halt the work. A checkpoint that cannot fail is a comment |
+| `S8` and `S9` stay separate | behaviour and artefacts fail differently. Merging them is how an empty index passes an install |
+| Tier 0 gets a mandatory deliverable | "no engine" was being read as "no indexing". Tier 0 is a hand-built index, and saying so removes the ambiguity |
+| The tier's *limitation* must be reported | invisible work gets reported as missing. Two sentences at `S7` prevent a support round |
+| Fix the adapter, not the rules | an unreferenced rule and a wrong rule look identical from outside. Rewriting the rule produces a second version of it — **F11** |

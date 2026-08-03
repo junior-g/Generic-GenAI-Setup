@@ -22,7 +22,7 @@ Instructions for any AI coding assistant working on this repository.
 The full rule set lives in `.ai/`. **This file points at it; it does not duplicate it.** Everything here is a
 pointer plus the few things too expensive to leave behind one.
 
-Framework: Generic-GenAI-Setup v<version>. Contract: `.ai/manifest.md`. Everything's location:
+Framework: Generic-GenAI-Setup v<version> (1.1.0 or later — earlier versions lack the preflight). Contract: `.ai/manifest.md`. Everything's location:
 `.ai/INDEX.md`.
 
 ---
@@ -94,6 +94,7 @@ The always-loaded set. Plain Markdown, readable by any assistant.
 | File | Covers |
 |------|--------|
 | `.ai/rules/00-agent-contract.md` | The operating contract |
+| `.ai/rules/01-session-preflight.md` | **The preflight block — no file edit before it.** See below |
 | `.ai/rules/05-failure-detection.md` | Failure signals `F1`–`F13` and the first move for each |
 | `.ai/rules/50-security.md` | Secrets, validation, authorisation, dependencies, privacy |
 | `.ai/rules/60-workflow-and-verification.md` | Grounding rule, gates, irreversible actions, resuming |
@@ -115,6 +116,8 @@ The always-loaded set. Plain Markdown, readable by any assistant.
 | `.ai/rules/84-failure-playbooks.md` | a first move did not clear a failure |
 | `.ai/knowledge/ai_troubleshooting.md` | understanding *why* something keeps going wrong |
 | `.ai/templates/task-formats/README.md` | planning a task — pick the discipline format |
+| `.ai/retrieval/build-index.md` | the index is empty or stale, or `S7` needs re-running |
+| `.ai/setup/install-audit.md` | the framework seems installed but is not being followed |
 
 ## Finding things — don't sweep directories
 
@@ -142,12 +145,34 @@ knowing by heart:
 - **F6** about to do something irreversible → stop and ask
 - **F11** two documents instruct differently → stop and ask which wins
 
-## Two standing rules
+## Before the first edit of any session
+
+Emit the preflight block. No file edit before it. Full rule:
+`.ai/rules/01-session-preflight.md`.
+
+```
+PREFLIGHT
+Track:     <A | B | C | T> — <slug>, or "unclassified — asking"
+Stage:     <step> · resume read: <artefact path, or "new work">
+Gates:     <the four commands above>
+Retrieval: tier <n> — <query command, or "INDEX.md + scoped search">
+Pins:      <files from the feature steering file, or "none yet">
+```
+
+Three lines can halt the work: an **unclassified** track (ask, do not edit), **gates** you cannot fill from
+`config.yml` (there is no definition of done), and a **retrieval** tier with no index content (the install is
+incomplete — run `.ai/setup/install-audit.md`).
+
+This is the only moment the process is checked. Without it every rule below is an obligation nothing asks for.
+
+## Three standing rules
 
 - **Documentation self-heals.** A document found missing, incomplete, or contradicted by the code pauses the
   current task: fix it, update `.ai/INDEX.md`, then resume. `.ai/rules/65-auto-healing-docs.md`.
 - **Nothing completes on one look.** Three verification passes — logic, structure, instruction-adherence — and
   a component that fails one is discarded and regenerated, not patched. `.ai/rules/62-3x-verification.md`.
+- **Retrieval is index-first.** `.ai/INDEX.md`, then the tier's search. Never a wide directory read. If the
+  index is empty the install is incomplete — say so rather than sweeping. `.ai/rules/95-retrieval.md`.
 
 ## Where code goes
 

@@ -9,7 +9,7 @@ how you yourself load persistent instructions, then set yourself up so you behav
 describes."* Same end state, whatever the tool.
 
 **Read first:** [`../manifest.md`](../manifest.md) — the contract listing what must be loaded, in what
-mode, and the twelve behaviours that must be true when you are done.
+mode, and the fourteen behaviours that must be true when you are done.
 
 > **Do not skip to writing files.** Steps `S1` and `S2` exist because guessing the project's conventions
 > or your own is failure mode **F5**, and inlining content you should have referenced is **F11**. Both are
@@ -88,7 +88,7 @@ Produce both tables before writing anything.
 
 | Manifest mode | Files | Your mechanism | Fallback applied? |
 |---------------|-------|----------------|-------------------|
-| ALWAYS | 8 universal + 4 generated | | |
+| ALWAYS | 9 universal + 4 generated | | |
 | AUTO | `80-work-intake.md` | | |
 | ON-DEMAND | 10 files | | |
 | FILE-MATCH | 3 generated, globs from `S1` | | |
@@ -168,25 +168,39 @@ Keep it to roughly one page. An adapter that restates the whole rule set has rec
 If your mechanism supports front matter or globs, use it — it is closer to the original behaviour and
 reproduces FILE-MATCH properly instead of degrading it.
 
-## `S7` — Retrieval and the central index
+## `S7` — Build the index 🔴
 
-**Retrieval tier.** Decide per [`../retrieval/index-spec.md`](../retrieval/index-spec.md) §2 and record
-it in `config.yml`. Do not default to tier 2 because it is the most sophisticated; a small project is
-better served by tier 0 and the tier decision is reversible.
+**Every tier has a deliverable. There is no tier at which `S7` produces nothing.**
 
-If you build a tier-2 index, run its build and one real query, and paste the output. An index that was
-never queried is not known to work.
+This is the step most often skipped, because choosing tier 0 feels like a decision to build nothing. It is
+not: tier 0 *is* a hand-built index, and an install that chose tier 0 and wrote no index has **skipped** `S7`
+rather than completed it. That mistake gets reported as "the setup missed the indexing logic", and it is the
+single most common activation failure.
 
-**Central index.** Fill Zone 2 of `.ai/INDEX.md`:
+**1. Choose the tier** per [`../retrieval/index-spec.md`](../retrieval/index-spec.md) §2 and record it in
+`config.yml` with a written rationale. Do not default to tier 2 because it is the most sophisticated; a small
+project is better served by tier 0, and the decision is reversible.
 
-- one row per project document, with a status of current / stale / missing
-- an empty active-work table, ready for the first slug
-- any documentation debt you noticed during `S1`, with severity
+**2. Build it** per [`../retrieval/build-index.md`](../retrieval/build-index.md). Deliverables:
 
-Documentation debt found during activation is *recorded*, not fixed. Activation is not the moment to
-rewrite the project's docs. The auto-healing rule
-([`../rules/65-auto-healing-docs.md`](../rules/65-auto-healing-docs.md)) will pick each item up the first
-time real work touches it.
+| Tier | Must exist when `S7` closes |
+|------|----------------------------|
+| **0** | `.ai/INDEX.md` Zone 2 fully populated — documents with a read status, entry points, layers, the six most-asked questions, empty work tables, recorded debt |
+| **1** | All of tier 0, plus the IDE's semantic search **verified** to index this repository |
+| **2** | All of tier 0, plus a working engine: build, stats, query, route, self-test in `gates.extra`, artefacts gitignored, all four commands in `config.yml` |
+
+**3. Delete the pristine markers.** The framework copy ships Zone 2 with placeholder rows and a
+`Zone 2 status: not generated` line. A surviving placeholder is how install-audit row A5.2 fails, and it is the
+difference between an index and an index-shaped file.
+
+**4. Report the tier and its consequence** — two sentences to the user: the tier, why, and **what it does not
+give them**. Without that sentence the work is invisible, and invisible work gets reported as missing.
+[`../retrieval/build-index.md`](../retrieval/build-index.md) §6 has the wording.
+
+Documentation debt found here is *recorded*, not fixed. Activation is not the moment to rewrite the project's
+docs (**F7**); the auto-healing rule
+([`../rules/65-auto-healing-docs.md`](../rules/65-auto-healing-docs.md)) picks each item up the first time real
+work touches it.
 
 ## `S8` — Prove the behaviour, then log 🔴
 
@@ -211,11 +225,35 @@ response, and pass/fail:
 | 12 | Nothing completes on one look | | ☐ |
 
 A box you cannot tick is a gap in the adapter. Fix the adapter, do not lower the bar. If a check remains
-unticked after a fix attempt, record it as a known gap rather than claiming 12/12.
+unticked after a fix attempt, record it as a known gap rather than claiming 14/14.
 
-Then append an entry to [`../adapters/adapters-log.md`](../adapters/adapters-log.md) using the template
-at the bottom of that file, and tell the user in a few sentences: the mechanism you used, what you
-created, what degraded and how you compensated, and anything you could not confirm.
+Then continue to `S9`. Logging happens there, once both scores are known.
+
+## `S9` — Install audit, then log 🔴
+
+`S8` proved the agent *behaves* correctly. `S9` proves the *artefacts exist and are filled*. They fail
+differently, which is why they are separate steps: an install can score full marks on behaviour while having an
+empty index and an unfilled `config.yml`, because behaviour probes ask questions and never open a file.
+
+Work through [`install-audit.md`](install-audit.md) — seven blocks, 69 rows. Report a score per block.
+
+| Block | Checks | Blocking rows |
+|-------|--------|---------------|
+| A1 payload | 6 | — |
+| A2 `config.yml` 🔴 | 11 | all of it — no gate commands means no definition of done |
+| A3 project rules | 13 | 3.11 a surviving template header means the file was copied, not generated |
+| A4 adapter | 11 | 4.8 preflight not referenced → the process will not be followed |
+| A5 indexing 🔴 | 8 (+6 tier 2) | 5.2 Zone 2 empty → no index exists |
+| A6 process reachable | 6 | 6.2 work-intake unreachable → work is never classified |
+| A7 behaviour | 14 | — |
+
+**Fix every blocking gap before reporting the install complete.** A non-blocking ❌ is recorded and left to the
+user's judgement.
+
+Then append an entry to [`../adapters/adapters-log.md`](../adapters/adapters-log.md) using the template at the
+bottom of that file, and tell the user in a few sentences: the mechanism you used, what you created, the two
+scores, the retrieval tier **and what it does not give them**, what degraded and how you compensated, and
+anything you could not confirm.
 
 ---
 
@@ -246,4 +284,4 @@ Each of these produces a setup that looks finished and is not.
 | Generate a design-system rule for a project with no UI | **F5** — a rule about nothing dilutes the ones that matter | Omit and record why |
 | Fix the project's documentation during activation | **F7** — unbounded scope before any work has started | Record as debt at `S7` |
 | Delete an instruction set you don't use | **F6** — irreversible, and not your call | Leave it, add alongside |
-| Claim 12/12 without running the probes | **F8**, **F9** — the one failure the whole protocol exists to prevent | Run them, report the real number |
+| Claim 14/14 without running the probes | **F8**, **F9** — the one failure the whole protocol exists to prevent | Run them, report the real number |

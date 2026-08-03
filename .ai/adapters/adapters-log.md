@@ -1,19 +1,20 @@
 # Adapters Log
 
-One entry per IDE set up against this rule set. Written at activation step `S8`, after the twelve behaviour
-checks have been run.
+One entry per IDE set up against this rule set. Written at activation step `S9`, after the fourteen behaviour
+checks **and** the install audit have both been run.
 
 **Why it exists:** an install that claims success without evidence is the exact failure the whole activation
 protocol is designed to prevent. This log is where the evidence lives — including the honest gaps.
 
-> **A recorded 10/12 with named gaps is a good entry. A claimed 12/12 without probes is not** (**F8**, **F9**).
+> **A recorded 12/14 with named gaps is a good entry. A claimed 14/14 without probes is not** (**F8**, **F9**).
 
 | Where to go | For |
 |-------------|-----|
 | [`README.md`](README.md) | how to write an adapter, and the reference-not-copy rule |
 | [`ide-matrix.md`](ide-matrix.md) | mechanisms per tool and their load-mode support |
-| [`../manifest.md`](../manifest.md) §3 | the twelve behaviour checks |
-| [`../setup/activation-protocol.md`](../setup/activation-protocol.md) | the `S0`–`S8` runbook |
+| [`../manifest.md`](../manifest.md) §3 | the fourteen behaviour checks |
+| [`../setup/activation-protocol.md`](../setup/activation-protocol.md) | the `S0`–`S9` runbook |
+| [`../setup/install-audit.md`](../setup/install-audit.md) | the `S9` artefact audit |
 
 ---
 
@@ -103,10 +104,28 @@ that references the old one, so the history of what degraded stays visible.
 
 | | |
 |---|---|
-| **Score** | **<n>/12** |
+| **Behaviour score** | **<n>/14** |
 | Checks that failed, and why | |
 | Adapter fixes attempted | |
 | **Known gaps carried forward** | |
+
+#### Install audit — `S9`
+
+| Block | Score | Blocking gaps |
+|-------|-------|---------------|
+| A1 payload | /6 | |
+| A2 `config.yml` 🔴 | /11 | |
+| A3 project rules | /13 | |
+| A4 adapter | /11 | |
+| A5 indexing 🔴 | /8 (+6 tier 2) | |
+| A6 process reachable | /6 | |
+
+| | |
+|---|---|
+| Retrieval tier, and **what it does not give the user** | |
+| Blocking gaps found | |
+| Fixed during the audit | |
+| Remaining, reported to the user | |
 
 #### Content inlined
 
@@ -152,7 +171,8 @@ A re-sync is a **new entry**, not an edit to the old one.
 | **Never overwritten** | `rules/project/**`, `config.yml`, `INDEX.md` Zone 2, `work/**` |
 | Differences reported to the user | |
 | Behaviour checks re-run | ☐ — **required**, since an upgrade can change what they expect |
-| New score | <n>/12 |
+| New behaviour score | <n>/14 |
+| New install-audit blocking gaps | |
 
 ## Reading this log
 

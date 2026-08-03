@@ -235,7 +235,7 @@ feature has a grounding problem, and only the record reveals it.
 | **Rule** | Activation is not complete until each is demonstrably true |
 | **Prevents** | **F8**, **F9** at setup time — the install that claims success without evidence |
 | **Reasoning** | reproducing files is not the goal; reproducing *behaviour* is. A file that exists and is never loaded has changed nothing |
-| **Why the honest score matters** | a recorded 10/12 with named gaps is an install someone can improve. A claimed 12/12 is one nobody can |
+| **Why the honest score matters** | a recorded 12/14 with named gaps is an install someone can improve. A claimed 14/14 is one nobody can |
 
 ---
 
@@ -292,3 +292,62 @@ Worth revisiting when:
 Changing a rule means editing it here, bumping the version, and recording in the changelog whether existing
 installations need to re-sync. A rule changed without a version bump is drift in the framework itself — the
 same **F11** it exists to prevent.
+
+---
+
+## 7. The enforcement layer — added in 1.1.0
+
+v1.0.0 had a structural hole that took two real installs to expose: **it described the process completely and
+never checked it.**
+
+Both installs produced a correct rule set, a correct adapter, and an agent that could quote the tracks back on
+request. Both then wrote code without classifying the work, and neither built an index. Both would have scored
+full marks on v1.0.0's twelve-check set, because none of those twelve asked about either thing.
+
+That is not a compliance failure. Every rule in the framework was an *obligation*, and there was no moment in a
+session or an install at which anything had to be *produced*. An obligation nobody asks for is not enforced by
+being written more clearly.
+
+### The session preflight
+
+| | |
+|---|---|
+| **Rule** | Before the first file edit of any session, emit five lines: track, stage and resume read, gates, retrieval tier, pins |
+| **Prevents** | **F2** drift, **F9** resuming from memory, **F10** early constraints falling out of view, **F4** the reflex to read directories wide, **F12** no budget checkpoint |
+| **Costs** | seconds, once per session and once per section boundary |
+| **Why it works** | it is the only place the process is *asked for*. It also lands at the end of the working context, immediately before the work, which is where a constraint is actually attended to |
+| **Why it is a stop, not a formality** | three of the five lines can halt the work — an unclassified track, gates that cannot be filled from `config.yml`, an absent index. A checkpoint that cannot fail is a comment |
+| **Verdict** | the highest return per line in the framework. It is nine lines of obligation made visible in five |
+
+### The install audit
+
+| | |
+|---|---|
+| **Rule** | Activation step `S9`: 69 rows across 7 blocks, each verified by **opening the file** |
+| **Prevents** | **F8** and **F9** at install time — the setup that reports success without checking its own output |
+| **Why separate from `S8`** | behaviour probes ask questions; the audit opens files. They fail *differently*, and merging them is precisely how an install passes every behaviour probe with an empty index and a `config.yml` full of unreplaced placeholders |
+| **Why four blocking rows** | an incomplete `config.yml` means no definition of done; an unreferenced preflight means the process will not be followed; an empty `INDEX.md` means every task starts with a directory sweep; an unreachable work-intake means work is never classified. Everything else degrades, these four break it |
+| **Verdict** | the counterpart the behaviour checks were always missing |
+
+### Every tier has an index deliverable
+
+| | |
+|---|---|
+| **Rule** | `S7` produces an index at every tier. Tier 0 *is* a hand-built index, not the absence of one |
+| **Prevents** | the most common activation failure — a tier chosen and nothing built |
+| **What was wrong in 1.0.0** | `index-spec.md` §2 correctly steers most projects to tier 0, and §3 then described only how to *query*. There was no build step, so "no engine" read as "no indexing", and the correct decision produced no visible artefact |
+| **The second half of the fix** | `S7` must report the tier **and its limitation** to the user in two sentences. Work that is invisible gets reported as missing, and that is a support round caused by a missing sentence |
+| **Verdict** | the framework was right about tiers and silent about deliverables. Being right silently is indistinguishable from being wrong |
+
+### What this says about the framework's own design
+
+The three additions have one shape in common, and it is the same shape as the rules they sit beside:
+**convert a silent failure into a visible one.**
+
+The grounding rule does not make an agent read files; it makes an unread file visible as a missing pointer. The
+gates do not make code correct; they make incorrectness visible before it ships. The preflight does not make an
+agent follow a track; it makes not following one visible in the first five lines.
+
+The v1.0.0 gap was that this principle had been applied to the *work* and not to the *framework*. An installed
+framework that was not being followed produced no signal at all — which, by its own standard, is the one failure
+mode it should never have shipped with.

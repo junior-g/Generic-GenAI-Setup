@@ -1,0 +1,11 @@
+# IDE and editor state — not part of the framework payload
+.idea/
+.vscode/
+*.iml
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# A target project's generated retrieval index is gitignored in that project,
+# not here. The framework ships no generated artefacts.

@@ -20,8 +20,8 @@ When the user sends **`super_saiyan_bann_jo`** — with or without this file att
 told: *"stop being a generic assistant on this repository and become the engineer this framework
 describes."*
 
-Run [`.ai/setup/activation-protocol.md`](.ai/setup/activation-protocol.md). It is nine steps, `S0`–`S8`,
-and it is not optional or reorderable. The short form:
+Run [`.ai/setup/activation-protocol.md`](.ai/setup/activation-protocol.md). It is ten steps, `S0`–`S9`, and it
+is not optional or reorderable. The short form:
 
 | Step | What happens |
 |------|--------------|
@@ -32,13 +32,14 @@ and it is not optional or reorderable. The short form:
 | `S4` | Install `.ai/` into the project and generate `.ai/config.yml` |
 | `S5` | Generate the project rule layer from `.ai/rules/project/*.template.md` |
 | `S6` | Write the IDE adapter — **references, never copies** |
-| `S7` | Build or declare the retrieval tier, and write `.ai/INDEX.md` |
-| `S8` | Prove the twelve behaviour checks in [`.ai/manifest.md`](.ai/manifest.md), then log the adapter |
+| `S7` | **Build** the index — tier 0 included; every tier has a deliverable |
+| `S8` | Prove the fourteen behaviour checks in [`.ai/manifest.md`](.ai/manifest.md) |
+| `S9` | Run the install audit — [`.ai/setup/install-audit.md`](.ai/setup/install-audit.md) — then log |
 
-The ALWAYS set is eight universal rule files plus four generated project ones. Everything else loads on a
+The ALWAYS set is nine universal rule files plus four generated project ones. Everything else loads on a
 match, on demand, or on a file glob — [`.ai/manifest.md`](.ai/manifest.md) §2 is the authoritative list.
 
-Activation is complete when `S8` shows 12/12, or when it names which checks failed and why. A framework
+Activation is complete when `S8` shows 14/14, or when it names which checks failed and why. A framework
 that says it installed without proving behaviour has not installed.
 
 ---
@@ -73,8 +74,9 @@ of a rule drift apart. These eleven are short, and missing one is expensive.
    component, endpoint, or field · changing permissions or roles · sending mail · anything touching
    money or a third party. Removals never ride inside feature work; they go to a separately approved
    cutover step. Add the new path, verify it, *then* remove the old one.
-4. **Classify work before starting it.** Track A (new feature) · B (enhancement) · C (bug fix) ·
-   T (trivial). The user states the track; you may propose another with a reason, but you ask first.
+4. **Classify work before starting it, and say so before the first edit.** Track A (new feature) ·
+   B (enhancement) · C (bug fix) · T (trivial). The preflight block in
+   `.ai/rules/01-session-preflight.md` is where that becomes visible; no edit before it. The user states the track; you may propose another with a reason, but you ask first.
    `.ai/rules/80-work-intake.md`.
 5. **Two strikes.** If the same approach fails twice, stop patching. Write down what the two failures
    *rule out*, then change approach at the level of the theory, not the parameters.
@@ -105,7 +107,7 @@ Full annotated map: [`.ai/INDEX.md`](.ai/INDEX.md). Contract that defines what m
 ```
 .ai/
 ├── INDEX.md            central index — the auto-healing target, always current
-├── manifest.md         load-mode contract + the 12 behaviour checks
+├── manifest.md         load-mode contract + the 14 behaviour checks
 ├── config.example.yml  the shape of the per-project config generated at S4
 ├── rules/              the rule set
 │   ├── 00 .. 95        universal — copied verbatim, never edited per project
@@ -113,21 +115,24 @@ Full annotated map: [`.ai/INDEX.md`](.ai/INDEX.md). Contract that defines what m
 ├── knowledge/          ai_troubleshooting.md · failure-taxonomy.md · cost-model.md
 ├── templates/          one artefact template per step of every track
 │   └── task-formats/   per-discipline task shapes: UI, backend, database, infra, data, integration
-├── retrieval/          index-spec.md — the three retrieval tiers
+├── retrieval/          index-spec.md · build-index.md — tiers, and how to build one
 ├── adapters/           per-IDE adapters + the setup log
 └── setup/              activation-protocol.md · discovery-checklist.md · stack-profiles.md
+                        install-audit.md — the `S9` artefact audit
 ```
 
 ## Reading order for a cold start
 
-Six files, in this order. Everything else is reached from them.
+Seven files, in this order. Everything else is reached from them.
 
 1. This file — the contract and the trigger.
 2. [`.ai/manifest.md`](.ai/manifest.md) — what must be loaded, in what mode, and how you prove it worked.
 3. [`.ai/rules/00-agent-contract.md`](.ai/rules/00-agent-contract.md) — the operating contract in full.
-4. [`.ai/rules/05-failure-detection.md`](.ai/rules/05-failure-detection.md) — the `F1`–`F13` signal table.
-5. [`.ai/rules/80-work-intake.md`](.ai/rules/80-work-intake.md) — how work gets classified.
-6. [`.ai/templates/README.md`](.ai/templates/README.md) — the step → template map.
+4. [`.ai/rules/01-session-preflight.md`](.ai/rules/01-session-preflight.md) — the one enforcement moment: no
+   file edit before the preflight block.
+5. [`.ai/rules/05-failure-detection.md`](.ai/rules/05-failure-detection.md) — the `F1`–`F13` signal table.
+6. [`.ai/rules/80-work-intake.md`](.ai/rules/80-work-intake.md) — how work gets classified.
+7. [`.ai/templates/README.md`](.ai/templates/README.md) — the step → template map.
 
 ## Provenance
 

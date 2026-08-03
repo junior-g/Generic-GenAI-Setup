@@ -14,7 +14,7 @@ The one file that knows where everything is. Two zones:
 
 | | |
 |---|---|
-| Framework version | 1.0.0 |
+| Framework version | 1.1.0 |
 | Last payload change | see [`../docs/CHANGELOG.md`](../docs/CHANGELOG.md) |
 | Zone 2 status | not generated — this is the pristine framework copy, not an installation |
 
@@ -26,8 +26,8 @@ The one file that knows where everything is. Two zones:
 
 | File | Load mode | Purpose |
 |------|-----------|---------|
-| [`../MAIN.md`](../MAIN.md) | ALWAYS | Activation anchor. Trigger phrase, `S0`–`S8` summary, the eleven non-negotiables |
-| [`manifest.md`](manifest.md) | ALWAYS | Load-mode contract: which rules load when, the fallbacks, the 12 behaviour checks |
+| [`../MAIN.md`](../MAIN.md) | ALWAYS | Activation anchor. Trigger phrase, `S0`–`S9` summary, the eleven non-negotiables |
+| [`manifest.md`](manifest.md) | ALWAYS | Load-mode contract: which rules load when, the fallbacks, the 14 behaviour checks |
 | [`config.example.yml`](config.example.yml) | ON-DEMAND | Annotated shape of the per-project `config.yml` written at `S4` |
 | [`../README.md`](../README.md) | ON-DEMAND | Human-facing overview and quickstart |
 | [`../docs/rationale.md`](../docs/rationale.md) | ON-DEMAND | Why each rule exists, the failure it prevents, and what the framework does **not** fix |
@@ -38,6 +38,7 @@ The one file that knows where everything is. Two zones:
 | File | Load mode | Covers |
 |------|-----------|--------|
 | [`rules/00-agent-contract.md`](rules/00-agent-contract.md) | ALWAYS | The operating contract: grounding, evidence, reversibility, honesty, scope, reporting |
+| [`rules/01-session-preflight.md`](rules/01-session-preflight.md) | ALWAYS | The one enforcement moment: no file edit before the preflight block — track, stage, gates, retrieval, pins |
 | [`rules/05-failure-detection.md`](rules/05-failure-detection.md) | ALWAYS | Runtime self-check. Signal → `F1`–`F13` code → first move. The hard-stop list |
 | [`rules/50-security.md`](rules/50-security.md) | ALWAYS | Secrets, input validation, authz, untrusted input, dependencies, PII, new endpoints |
 | [`rules/60-workflow-and-verification.md`](rules/60-workflow-and-verification.md) | ALWAYS | Where work starts, the grounding rule, the four gates, irreversible actions, resuming |
@@ -113,7 +114,8 @@ The one file that knows where everything is. Two zones:
 
 | File | Purpose |
 |------|---------|
-| [`retrieval/index-spec.md`](retrieval/index-spec.md) | The three retrieval tiers, the tier-decision rule, and the full spec for building a local zero-cost retrieval index when a project is large enough to need one |
+| [`retrieval/index-spec.md`](retrieval/index-spec.md) | The three retrieval tiers, the tier-decision rule, and the full spec for a local zero-cost retrieval index when a project is large enough to need one |
+| [`retrieval/build-index.md`](retrieval/build-index.md) | **How to actually build it.** The `S7` procedure, with a deliverable per tier — tier 0 included. Run it when install-audit row A5.2 fails |
 
 ### Adapters
 
@@ -128,9 +130,10 @@ The one file that knows where everything is. Two zones:
 
 | File | Purpose |
 |------|---------|
-| [`setup/activation-protocol.md`](setup/activation-protocol.md) | The `super_saiyan_bann_jo` runbook, steps `S0`–`S8` |
+| [`setup/activation-protocol.md`](setup/activation-protocol.md) | The `super_saiyan_bann_jo` runbook, steps `S0`–`S9` |
 | [`setup/discovery-checklist.md`](setup/discovery-checklist.md) | The evidence-gathering commands for `S1` and `S2`, and what each finding decides |
 | [`setup/stack-profiles.md`](setup/stack-profiles.md) | Gate-role → concrete-command mapping for 11 ecosystems, plus how to add one |
+| [`setup/install-audit.md`](setup/install-audit.md) | The `S9` artefact audit — 69 rows across 7 blocks. Does the deliverable exist and is it filled? Run any time an install seems not to be working |
 
 ---
 

@@ -99,6 +99,10 @@ Non-trivial work enters through a track: A (new feature) · B (enhancement) · C
 The user states the track; you may propose a different one with a reason, but you ask first.
 [`80-work-intake.md`](80-work-intake.md).
 
+**Say which track before the first file edit.** The preflight block in
+[`01-session-preflight.md`](01-session-preflight.md) is where that becomes visible — it is the framework's one
+enforcement moment, and without it every rule here is an obligation nothing ever checks.
+
 Round caps are **hard, with no escape hatch.** At a cap the stage closes and unresolved items become
 recorded residual risks. Wanting one more round is **F7**.
 

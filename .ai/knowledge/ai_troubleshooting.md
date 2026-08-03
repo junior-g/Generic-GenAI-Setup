@@ -288,6 +288,7 @@ Something is wrong and you want the fastest route to the right playbook.
 | A duplicate external effect | §7 irreversibility | **F6** |
 | Two rules disagree | §8 drift | **F11** |
 | Guessed a shape and it broke | [`failure-taxonomy.md`](failure-taxonomy.md) | **F13** |
+| Rules all present, none of them followed | §9 installed but not followed | — run the install audit |
 
 ---
 
@@ -306,3 +307,72 @@ Honesty is the point of this section. These remain open, and pretending otherwis
 | Process compliance itself | nothing forces the rules to be followed | the artefacts are the evidence; a missing artefact is visible |
 
 The framework converts silent failures into visible ones. It does not make the failures impossible.
+
+---
+
+## 9. Installed but not followed
+
+### What it actually is
+
+The meta-failure. Every rule file is present and correct. The adapter exists. The agent can quote the tracks
+back to you. And it still writes code without classifying the work, and still reads directories wide instead of
+using the index.
+
+This is not a comprehension failure and not a compliance failure. It is a **missing checkpoint**. An obligation
+that is never *asked for* is not enforced by being written down more clearly, because the agent is not
+disobeying a rule it consulted — it never reached the moment where consulting it was required.
+
+The two most common reports are exactly the two most common missing checkpoints:
+
+| Report | Actual cause |
+|--------|--------------|
+| "It did not follow the steps for a new feature" | nothing required the track to be stated before the first edit |
+| "It missed implementing the indexing logic" | tier 0 was chosen and the choice produced no visible deliverable, so the work looked like an omission — or genuinely was one |
+
+### The three-layer diagnostic
+
+Work down. The first layer that fails is the cause; the layers below it are consequences.
+
+| # | Layer | Question | Fails when | Fix |
+|---|-------|----------|-----------|-----|
+| 1 | **Loaded** | Is the rule in the agent's context at all? | it is in the ALWAYS set of the manifest but not named in the adapter | install-audit A4 |
+| 2 | **Reachable** | Can the agent get to it from a cold start? | it is AUTO or ON-DEMAND and the adapter never names it, so the agent has never heard of it | install-audit A6 |
+| 3 | **Required** | Is there a moment that makes the agent produce it? | there is no checkpoint — the rule is an obligation nobody asks for | [`../rules/01-session-preflight.md`](../rules/01-session-preflight.md) |
+
+Layer 2 is where the track failure usually lives. `80-work-intake.md` is **AUTO**, and AUTO is unsupported on
+most tools ([`../adapters/ide-matrix.md`](../adapters/ide-matrix.md)) — so unless the adapter names it
+explicitly, work-intake silently never loads. The agent then has no classification step to skip, because it
+does not know one exists.
+
+Layer 3 is where it lives when layers 1 and 2 are fine. This was the framework's own gap until v1.1.0: the
+process was fully described, fully reachable, and had no moment at which anything was checked.
+
+### The guardrails
+
+| Guardrail | Where | Why it works |
+|-----------|-------|--------------|
+| **The preflight block** | [`../rules/01-session-preflight.md`](../rules/01-session-preflight.md) | The one enforcement moment. Track, stage, gates, retrieval and pins must be stated before the first edit, so skipping them becomes visible rather than silent |
+| **Install audit** | [`../setup/install-audit.md`](../setup/install-audit.md) | Behaviour probes ask questions; the audit opens files. An install can pass every probe with an empty index and an unfilled config |
+| **Every tier has an index deliverable** | [`../retrieval/build-index.md`](../retrieval/build-index.md) | Removes "tier 0 means build nothing". Tier 0 *is* a hand-built index, and `S7` is not complete without it |
+| **Report the tier and its limitation** | `build-index.md` §6 | Work that is invisible gets reported as missing. Two sentences prevent it |
+| **Adapter content item 11** | [`../adapters/README.md`](../adapters/README.md) | The preflight must be named in the adapter, or the enforcement moment never loads either |
+| **Behaviour checks 13 and 14** | [`../manifest.md`](../manifest.md) §3 | Probe indexing and the preflight directly — the two things the original twelve did not ask about |
+
+### If it is happening to you now
+
+1. Run [`../setup/install-audit.md`](../setup/install-audit.md). Report the per-block score.
+2. Check rows **A4.8** (preflight named in the adapter), **A6.2** (work-intake reachable) and **A5.2**
+   (`INDEX.md` Zone 2 populated). Those three cover almost every instance.
+3. Fix the adapter, not the rules. The rules are almost never the problem — an unreferenced rule and a wrong
+   rule look identical from the outside, and only one of them is common.
+4. Build the index per [`../retrieval/build-index.md`](../retrieval/build-index.md) if A5.2 failed. Do **not**
+   change tier to compensate; the tier was probably right and the deliverable was skipped.
+5. Re-run `S8` and `S9`. Record both scores.
+
+### Why the adapter, not the rules
+
+An install that behaves wrongly is usually a *loading* problem wearing a *content* problem's clothes. Rewriting
+a rule that was never in context produces a better rule that is still never in context — and now there are two
+versions of it, which is **F11**.
+
+Check whether the agent had the rule before deciding the rule is wrong.

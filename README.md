@@ -43,8 +43,8 @@ super_saiyan_bann_jo
 
 The assistant then runs [`.ai/setup/activation-protocol.md`](.ai/setup/activation-protocol.md): it
 inspects the project, discovers how your IDE loads persistent instructions, copies `.ai/` in, generates
-the project-specific rule layer, writes an IDE adapter, and proves twelve behaviour checks before
-reporting done.
+the project-specific rule layer, writes an IDE adapter, **builds the index**, proves fourteen behaviour
+checks, and runs a 69-row install audit before reporting done.
 
 **Then, to start work:**
 
@@ -111,7 +111,9 @@ artefacts carries a `file:line` pointer marked read-and-verified.
 | Failures are named, not improvised around | [`05-failure-detection.md`](.ai/rules/05-failure-detection.md) → [`84-failure-playbooks.md`](.ai/rules/84-failure-playbooks.md) |
 | Documentation self-heals during work | [`65-auto-healing-docs.md`](.ai/rules/65-auto-healing-docs.md) |
 | Nothing ships on one look | [`62-3x-verification.md`](.ai/rules/62-3x-verification.md) |
-| Setup is provably installed | 12 behaviour checks in [`.ai/manifest.md`](.ai/manifest.md) |
+| The process is actually followed | preflight block in [`01-session-preflight.md`](.ai/rules/01-session-preflight.md) — no file edit before it |
+| Setup is provably installed | 14 behaviour checks in [`.ai/manifest.md`](.ai/manifest.md) |
+| Install gaps are found, not discovered later | 69-row audit in [`install-audit.md`](.ai/setup/install-audit.md) |
 
 ## Language and IDE independence
 
@@ -131,7 +133,7 @@ assistants read natively. Adapters reference the rule files; they never copy the
 
 | Path | Contents |
 |------|----------|
-| [`MAIN.md`](MAIN.md) | activation anchor, the eleven non-negotiables, the `S0`–`S8` summary |
+| [`MAIN.md`](MAIN.md) | activation anchor, the eleven non-negotiables, the `S0`–`S9` summary |
 | [`.ai/`](.ai/INDEX.md) | the portable payload — see [`.ai/INDEX.md`](.ai/INDEX.md) |
 | [`docs/rationale.md`](docs/rationale.md) | why each rule exists, with the failure that produced it |
 | [`docs/CHANGELOG.md`](docs/CHANGELOG.md) | framework version history |

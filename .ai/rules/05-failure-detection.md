@@ -30,6 +30,8 @@ If a signal below matches what you just saw or what you are about to do, apply t
 | Session running well past its declared budget | **F12** | Report progress and remaining budget; propose phasing |
 | Output truncated mid-structure, or early instructions no longer influencing behaviour | **F4** | Stop adding context. Prune, re-pin, re-state the constraint |
 | Agreeing with the user's framing because it is theirs | **F8** | Separate the claim from who made it, then check the claim |
+| About to edit a file without having emitted the preflight block this session | — | Emit it. [`01-session-preflight.md`](01-session-preflight.md). If the track is unknown, that is a stop — ask |
+| Reaching for a directory read because you do not know what indexing exists | — | Read `config.yml` → `retrieval`. If there is no index content, run [`../setup/install-audit.md`](../setup/install-audit.md) A5 |
 | A document you are relying on is missing, incomplete, or contradicted by the code | — | Pause, fix the doc, update `INDEX.md`, resume. [`65-auto-healing-docs.md`](65-auto-healing-docs.md) |
 
 ## Hard stops — ask, never proceed

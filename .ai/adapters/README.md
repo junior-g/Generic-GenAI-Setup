@@ -62,12 +62,17 @@ Ten items. The filename and front matter change per tool; the content contract d
 | 8 | The `F1`–`F13` vocabulary exists; where the table and playbooks are | `rules/05-failure-detection.md` |
 | 9 | ON-DEMAND and FILE-MATCH files, listed with purpose and glob | [`../manifest.md`](../manifest.md) §2 |
 | 10 | Auto-healing and 3× verification — one line each, with paths | `rules/65`, `rules/62` |
+| 11 | **The preflight block** — no file edit before it | `rules/01-session-preflight.md` |
 
 **Roughly one page.** An adapter that restates the whole rule set has recreated the drift problem it exists to
 avoid.
 
-Items 9 and 10 are the ones most often dropped, and dropping them is what causes a silent capability loss: an
-agent that has never heard of a file will not open it, however relevant it is.
+Items 9, 10 and 11 are the ones most often dropped, and dropping them causes silent capability loss: an agent
+that has never heard of a file will not open it, however relevant it is.
+
+**Item 11 is the one whose absence is reported as "the framework is installed but nothing follows it".** The
+preflight is the only moment the process is checked; leave it out of the adapter and every track, gate and pin
+rule stays an obligation nothing ever asks for. Install-audit row A4.8 exists for this.
 
 ## Writing one
 
@@ -77,8 +82,10 @@ agent that has never heard of a file will not open it, however relevant it is.
 3. **Use native front matter and globs if they exist.** They reproduce FILE-MATCH properly rather than
    degrading it to ON-DEMAND.
 4. **Write the ten items**, as references.
-5. **Prove the twelve behaviour checks** — activation `S8`. Files existing is not an install.
-6. **Log it** in [`adapters-log.md`](adapters-log.md), including what degraded.
+5. **Prove the fourteen behaviour checks** — activation `S8`. Files existing is not an install.
+6. **Run the install audit** — activation `S9`, [`../setup/install-audit.md`](../setup/install-audit.md).
+   Behaviour passing does not mean the artefacts exist.
+7. **Log it** in [`adapters-log.md`](adapters-log.md), including both scores and what degraded.
 
 ## Degrading a mode safely
 

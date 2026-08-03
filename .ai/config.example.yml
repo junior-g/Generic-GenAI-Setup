@@ -12,7 +12,7 @@
 # reliably. Nothing in the framework executes this file.
 
 framework:
-  version: "1.0.0"           # the Generic-GenAI-Setup version this project was installed from
+  version: "1.1.0"           # the Generic-GenAI-Setup version this project was installed from
   installed: "YYYY-MM-DD"
   installed_by: "<assistant name and version>"
   home: "~/Documents/Generic-GenAI-Setup"   # where to re-sync the payload from

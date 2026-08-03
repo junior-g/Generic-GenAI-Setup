@@ -3,8 +3,12 @@
 **Load mode: ALWAYS.** Retrieval is the first action of most tasks, and doing it badly is the largest
 avoidable cost in a session.
 
-The project's tier and its commands are in `config.yml` → `retrieval`. Tier selection and the full index
-specification: [`../retrieval/index-spec.md`](../retrieval/index-spec.md).
+The project's tier and its commands are in `config.yml` → `retrieval`. Tier selection:
+[`../retrieval/index-spec.md`](../retrieval/index-spec.md). How the index is built, at every tier:
+[`../retrieval/build-index.md`](../retrieval/build-index.md).
+
+**If the project has no index content, the install is incomplete** — not a reason to read directories wide. Run
+[`../setup/install-audit.md`](../setup/install-audit.md) block A5 and build it.
 
 ---
 
@@ -97,3 +101,4 @@ A pin list of twenty files is not a working set, it is a directory sweep with ex
 | A cached answer for a query you have changed the code under | force a fresh pass |
 | Two documents answer the same question differently | **F11** — stop, report the conflict, ask which wins |
 | The index has no coverage of an area you need | that is documentation debt — record it, then read the source directly |
+| `INDEX.md` Zone 2 is empty or still has placeholder rows | `S7` was skipped. Build it: [`../retrieval/build-index.md`](../retrieval/build-index.md) §2 |

@@ -118,7 +118,9 @@ the section should be split.
 
 ## The output of intake
 
-One short statement, before any track file is loaded:
+The track goes into the preflight block
+([`01-session-preflight.md`](01-session-preflight.md)), which is emitted before the first file edit. Intake
+itself produces one short statement, before any track file is loaded:
 
 > **Track B.** Adding an `archived` state to customer records. Existing surfaces: the list screen and the
 > detail screen. Live data exists, so migration and back-compat are in scope. New actor: none. Must not

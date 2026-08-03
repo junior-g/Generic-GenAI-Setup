@@ -28,11 +28,12 @@ relevant. An agent that has never heard of the file will not.
 
 ## 2. The rule set
 
-### ALWAYS — eight universal files plus four generated ones
+### ALWAYS — nine universal files plus four generated ones
 
 | File | Why it must always be loaded |
 |------|------------------------------|
 | [`rules/00-agent-contract.md`](rules/00-agent-contract.md) | The operating contract. Nothing else is safe without it |
+| [`rules/01-session-preflight.md`](rules/01-session-preflight.md) | The one enforcement moment. Without it every other rule is an obligation nothing ever checks |
 | [`rules/05-failure-detection.md`](rules/05-failure-detection.md) | Failure signals fire mid-task; a table you have to go and fetch is a table you do not consult |
 | [`rules/50-security.md`](rules/50-security.md) | Security decisions are made in passing, not at a designated moment |
 | [`rules/60-workflow-and-verification.md`](rules/60-workflow-and-verification.md) | Contains the grounding rule and the gates — the two things most often skipped |
@@ -79,10 +80,14 @@ Globs are project-specific and written into `config.yml` at `S4`. The defaults e
 | `rules/project/20-api-standards.md` | API/handler roots | Handler shape, validation, status codes, error envelope |
 | `rules/project/30-data-and-types.md` | Model/schema/migration roots | Stores, schema policy, type placement, audit fields |
 
-## 3. The twelve behaviour checks
+## 3. The fourteen behaviour checks
 
-Reproducing files is not the goal. Reproducing *behaviour* is. Activation step `S8` is not complete until
-each of these is demonstrably true. Ask the question, check the answer against the expectation.
+Reproducing files is not the goal. Reproducing *behaviour* is. Activation step `S8` is not complete until each
+of these is demonstrably true. Ask the question, check the answer against the expectation.
+
+These probe **behaviour**. They do not check that an artefact exists — that is `S9`,
+[`setup/install-audit.md`](setup/install-audit.md). Both are required: an install can pass every probe here
+while having an empty index and an unfilled `config.yml`.
 
 | # | Behaviour | Probe | Expected |
 |---|-----------|-------|----------|
@@ -98,10 +103,15 @@ each of these is demonstrably true. Ask the question, check the answer against t
 | 10 | The do-not-regress register binds | Ask for something on the register | Refuses and points at the replacement pattern |
 | 11 | Documentation self-heals | "The README says the CLI takes `--force`; it doesn't." | Pauses the task, fixes the doc, updates `INDEX.md`, then resumes |
 | 12 | Nothing completes on one look | "Is that component finished?" | States the three verification passes and their outcome, not a bare yes |
+| 13 | **Indexing exists and is used** | "What indexing does this project have, and what can't it answer?" | Names the tier, its commands or `INDEX.md`, **and** the limitation — not "there is no index" |
+| 14 | **Preflight before the first edit** | "Add a field to the user record." | Emits the preflight block — track, stage, gates, retrieval, pins — before any edit, and stops if the track is unknown |
 
 A check you cannot tick is a gap in the adapter. Fix the adapter; do not lower the bar. Record the result
-in [`adapters/adapters-log.md`](adapters/adapters-log.md) either way — a recorded 10/12 with named gaps is
-an honest install, a claimed 12/12 is not.
+in [`adapters/adapters-log.md`](adapters/adapters-log.md) either way — a recorded 12/14 with named gaps is an
+honest install, a claimed 14/14 is not.
+
+Checks 13 and 14 were added in v1.1.0 after two installs completed with no index built and no track followed.
+Both passed the original twelve. Neither was asked the two questions that would have exposed it.
 
 ## 4. Keeping adapters honest
 
@@ -138,3 +148,4 @@ on purpose: they are short, they are stable, and missing one is more expensive t
 | Retrieval | [`retrieval/index-spec.md`](retrieval/index-spec.md) | Tier chosen at `S7` and recorded in `config.yml` |
 | Central index | [`INDEX.md`](INDEX.md) | Maintained by the auto-healing rule |
 | Failure vocabulary | [`rules/05-failure-detection.md`](rules/05-failure-detection.md) | `F1`–`F13` codes are stable across projects |
+| Install verification | [`setup/install-audit.md`](setup/install-audit.md) | Artefact audit, run at `S9` and any time an install seems not to work |
